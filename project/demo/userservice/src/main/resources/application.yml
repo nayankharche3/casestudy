@@ -1,0 +1,36 @@
+server:
+  port: 8091   # User Service runs on 8091
+
+spring:
+  application:
+    name: user-service
+
+  datasource:
+    url: jdbc:mysql://localhost:3307/blogsite?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+    username: root
+    password: pass@word1
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update   # auto-create/update schema
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
+
+logging:
+  level:
+    root: DEBUG
+    org.springframework: DEBUG
+    org.springframework.security: INFO
+    org.hibernate.SQL: DEBUG       # shows SQL queries
+    com.example: DEBUG             # your own package logs
+  file:
+    name: application.log          # optional: write logs to a file
+
+# ✅ JWT configuration for AuthController and JwtUtil
+jwt:
+  secret: "this-is-a-very-long-secret-key-1234567890"
+  expiration-in-seconds: 3600

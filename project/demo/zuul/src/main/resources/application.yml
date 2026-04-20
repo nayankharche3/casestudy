@@ -1,0 +1,78 @@
+#server:
+#  port: 8093   # API Gateway runs on 8093
+#
+#spring:
+#  application:
+#    name: api-gateway
+#security:
+#  user:
+#    name: admin
+#    password: admin123
+#  cloud:
+#    gateway:
+#      routes:
+#        # USER SERVICE (authentication, signup, login, JWT issuance)
+#        - id: userservice
+#          uri: http://localhost:8091
+#          predicates:
+#            - Path=/api/v1.0/blogsite/user/auth/**
+#
+#        # BLOG SERVICE (blog CRUD operations for logged-in users)
+#        - id: blogservice-user
+#          uri: http://localhost:8090
+#          predicates:
+#            - Path=/api/v1.0/blogsite/user/blogs/**
+#
+#        # BLOG SERVICE (public blog queries)
+#        - id: blogservice-public
+#          uri: http://localhost:8090
+#          predicates:
+#            - Path=/api/v1.0/blogsite/blogs/**
+#
+#      # ✅ Global CORS configuration
+#      globalcors:
+#        corsConfigurations:
+#          '[/**]':
+#            allowedOrigins: "http://localhost:4200"
+#            allowedMethods: "*"
+#            allowedHeaders: "*"
+#            allowCredentials: true
+server:
+  port: 8093   # API Gateway runs on 8093
+
+spring:
+  application:
+    name: api-gateway
+
+  security:
+    user:
+      name: admin
+      password: admin123   # fixed Basic Auth credentials
+
+  cloud:
+    gateway:
+      routes:
+        # USER SERVICE
+        - id: userservice
+          uri: http://localhost:8091
+          predicates:
+            - Path=/api/v1.0/blogsite/user/**
+          #filters:
+          #  - AuthenticationFilter
+
+        # BLOG SERVICE
+        - id: blogservice
+          uri: http://localhost:8090
+          predicates:
+            - Path=/api/v1.0/blogsite/blogs/**
+          #filters:
+          #  - AuthenticationFilter
+
+      # ✅ Add this block for CORS
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:4200"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+            allowCredentials: true
