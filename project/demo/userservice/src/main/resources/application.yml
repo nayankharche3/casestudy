@@ -34,3 +34,14 @@ logging:
 jwt:
   secret: "this-is-a-very-long-secret-key-1234567890"
   expiration-in-seconds: 3600
+
+# ✅ Swagger/OpenAPI configuration
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    disable-swagger-default-url: true
+    operationsSorter: method
+    tagsSorter: alpha
+    display-request-duration: true

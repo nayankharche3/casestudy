@@ -21,6 +21,15 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws IOException, javax.servlet.ServletException {
+        String uri = request.getRequestURI();
+
+        // ✅ Allow login, register, and Swagger/OpenAPI endpoints without JWT
+        if (uri.contains("/login") || uri.contains("/register")
+                || uri.contains("/swagger-ui") || uri.contains("/v3/api-docs")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String header = request.getHeader("Authorization");
         if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring(7);
@@ -29,15 +38,24 @@ public class JwtFilter extends OncePerRequestFilter {
                         .setSigningKey(secret)
                         .parseClaimsJws(token)
                         .getBody();
-                // You can set authentication context here if needed
+
+                // TODO: Optionally set authentication context here
+                // Example:
+                // UsernamePasswordAuthenticationToken auth =
+                //     new UsernamePasswordAuthenticationToken(
+                //         claims.getSubject(), null,
+                //         Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
+                // SecurityContextHolder.getContext().setAuthentication(auth);
+
             } catch (Exception e) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT");
                 return;
             }
-        } else if (!request.getRequestURI().contains("/login") && !request.getRequestURI().contains("/register")) {
+        } else {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Missing JWT");
             return;
         }
+
         filterChain.doFilter(request, response);
     }
 }
